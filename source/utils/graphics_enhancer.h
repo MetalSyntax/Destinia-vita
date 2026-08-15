@@ -9,19 +9,17 @@ extern "C" {
 #endif
 
 typedef enum {
-    FILTER_SHARP_BILINEAR_2X = 0, // Sharp Bilinear: Preserves crisp pixel art without shimmering or blur
-    FILTER_SCALE2X_HD,            // Scale2x: Intelligent edge rounding for 2D sprites
-    FILTER_VIBRANT_2X,            // Vibrant 2x: Sharp Bilinear + Color saturation & contrast boost (OLED/LCD)
-    FILTER_INTEGER_2X,            // Integer 2x: 1:1 pixel crisp scaling
-    FILTER_SMOOTH_LINEAR,         // Smooth Bilinear interpolation
-    FILTER_CLASSIC_NEAREST,       // Classic unscaled nearest neighbor
+    FILTER_SHARP_PIXEL_ART = 0,   // Crisp 1:1 Pixel-Art Nearest Neighbor
+    FILTER_SMOOTH_BILINEAR,       // Smooth Bilinear Texture Filter
+    FILTER_VIBRANT_OLED,          // Rich Color Vibrancy & Contrast Boost (Sharp)
+    FILTER_VIBRANT_SMOOTH,        // Rich Color Vibrancy & Contrast Boost (Smooth)
     FILTER_MAX_COUNT
 } GraphicsFilterMode;
 
 typedef enum {
-    ASPECT_RATIO_5_3_FIT = 0,     // 906.67 x 544: Correct native 5:3 aspect ratio fitting full height
+    ASPECT_RATIO_5_3_FIT = 0,     // 906.67 x 544: Native 5:3 aspect ratio fitting full height
     ASPECT_RATIO_INTEGER_2X,      // 800 x 480: Exact 2x integer scaling centered
-    ASPECT_RATIO_FULLSCREEN,      // 960 x 544: Fullscreen fill
+    ASPECT_RATIO_FULLSCREEN,      // 960 x 544: Fullscreen 16:9 stretch
     ASPECT_MAX_COUNT
 } GraphicsAspectMode;
 

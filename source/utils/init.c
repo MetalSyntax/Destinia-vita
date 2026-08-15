@@ -27,6 +27,8 @@
 #include <fios/fios.h>
 
 #include <psp2/io/stat.h>
+#include <psp2/io/dirent.h>
+#include <stdio.h>
 
 // Base address for the Android .so to be loaded at
 #define LOAD_ADDRESS 0x98000000
@@ -42,6 +44,18 @@ static void create_dirs(void) {
     sceIoMkdir("ux0:data/destinia/gxp", 0777);
     sceIoMkdir("ux0:data/destinia/cg", 0777);
     sceIoMkdir("ux0:data/destinia/glsl", 0777);
+
+    // Clean any broken shader cache files from previous crashes
+    SceUID dfd = sceIoDopen("ux0:data/shader_cache/DESTINIA1");
+    if (dfd >= 0) {
+        SceIoDirent dir;
+        while (sceIoDread(dfd, &dir) > 0) {
+            char path[256];
+            snprintf(path, sizeof(path), "ux0:data/shader_cache/DESTINIA1/%s", dir.d_name);
+            sceIoRemove(path);
+        }
+        sceIoDclose(dfd);
+    }
 }
 
 void soloader_init_all() {
