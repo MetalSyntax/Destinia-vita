@@ -26,12 +26,27 @@
 #include <so_util/so_util.h>
 #include <fios/fios.h>
 
+#include <psp2/io/stat.h>
+
 // Base address for the Android .so to be loaded at
 #define LOAD_ADDRESS 0x98000000
 
 extern so_module so_mod;
 
+static void create_dirs(void) {
+    sceIoMkdir("ux0:data", 0777);
+    sceIoMkdir("ux0:data/shader_cache", 0777);
+    sceIoMkdir("ux0:data/shader_cache/DESTINIA1", 0777);
+    sceIoMkdir("ux0:data/destinia", 0777);
+    sceIoMkdir("ux0:data/destinia/logs", 0777);
+    sceIoMkdir("ux0:data/destinia/gxp", 0777);
+    sceIoMkdir("ux0:data/destinia/cg", 0777);
+    sceIoMkdir("ux0:data/destinia/glsl", 0777);
+}
+
 void soloader_init_all() {
+    create_dirs();
+
 	// Launch `app0:configurator.bin` on `-config` init param
     sceAppUtilInit(&(SceAppUtilInitParam){}, &(SceAppUtilBootParam){});
     SceAppUtilAppEventParam eventParam;

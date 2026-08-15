@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <psp2/io/stat.h>
 
 #define GAME_W 400.0f
 #define GAME_H 240.0f
@@ -198,6 +199,11 @@ static void save_config(void) {
 }
 
 void graphics_enhancer_init(void) {
+    sceIoMkdir("ux0:data", 0777);
+    sceIoMkdir("ux0:data/shader_cache", 0777);
+    sceIoMkdir("ux0:data/shader_cache/DESTINIA1", 0777);
+    sceIoMkdir("ux0:data/destinia", 0777);
+
     load_config();
 
     s_prog_sharp = compile_shader_program(vshader_src, fshader_sharp_src);
