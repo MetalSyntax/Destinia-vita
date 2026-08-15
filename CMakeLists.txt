@@ -83,6 +83,7 @@ add_executable(${CMAKE_PROJECT_NAME}
                source/reimpl/asset_manager.cpp
                source/utils/dialog.c
                source/utils/glutil.c
+               source/utils/graphics_enhancer.c
                source/utils/init.c
                source/utils/logger.c
                source/utils/settings.c

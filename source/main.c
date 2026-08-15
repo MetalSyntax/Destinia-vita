@@ -11,6 +11,7 @@
 #include "reimpl/io.h"
 #include "java.h"
 #include "audio.h"
+#include "utils/graphics_enhancer.h"
 
 #include <psp2/kernel/threadmgr.h>
 #include <psp2/kernel/processmgr.h>
@@ -108,6 +109,7 @@ int main(int argc, char *argv[]) {
 
     audio_init();
     gl_init();
+    graphics_enhancer_init();
 
     // Input initialization
     sceCtrlSetSamplingMode(SCE_CTRL_MODE_ANALOG);
@@ -145,32 +147,11 @@ int main(int argc, char *argv[]) {
     glBindTexture(GL_TEXTURE_2D, game_tex);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, GAME_W, GAME_H, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    // Quad geometry (Orthographic 2D)
-    const GLfloat vertices[] = {
-        MARGIN_X,            RENDER_H, 0.0f,
-        MARGIN_X + RENDER_W, RENDER_H, 0.0f,
-        MARGIN_X,            0.0f,     0.0f,
-        MARGIN_X + RENDER_W, 0.0f,     0.0f,
-    };
-
-    const GLfloat texcoords[] = {
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-    };
-
     glViewport(0, 0, (GLsizei)VITA_SCREEN_W, (GLsizei)VITA_SCREEN_H);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrthof(0.0f, VITA_SCREEN_W, VITA_SCREEN_H, 0.0f, -1.0f, 1.0f);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     glDisable(GL_BLEND);
@@ -191,20 +172,35 @@ int main(int argc, char *argv[]) {
         SceTouchData touch;
         sceTouchPeek(SCE_TOUCH_PORT_FRONT, &touch, 1);
 
-        // 1. Process Physical Start Button (Menu key)
+        // 1. Graphical Enhancement Mode Hotkeys:
+        // Hold L1 + R1 + TRIANGLE -> Cycle Shaders / Enhancers
+        // Hold L1 + R1 + SQUARE   -> Cycle Aspect Ratio Mode
+        if ((pad.buttons & SCE_CTRL_L1) && (pad.buttons & SCE_CTRL_R1)) {
+            if ((pad.buttons & SCE_CTRL_TRIANGLE) && !(prev_buttons & SCE_CTRL_TRIANGLE)) {
+                graphics_enhancer_cycle_filter();
+            }
+            if ((pad.buttons & SCE_CTRL_SQUARE) && !(prev_buttons & SCE_CTRL_SQUARE)) {
+                graphics_enhancer_cycle_aspect();
+            }
+        }
+
+        // 2. Process Physical Start Button (Menu key)
         if ((pad.buttons & SCE_CTRL_START) && !(prev_buttons & SCE_CTRL_START)) {
             jniTouch_fn(&jni, (jobject)0x42424242, 0, 0, 3); // Action 3 = Menu
         }
 
-        // 2. Process Touch Screen (Front Touch)
+        // 3. Process Touch Screen (Front Touch)
         int touch_active = (touch.reportNum > 0);
         if (touch_active) {
+            float rx, ry, rw, rh;
+            graphics_enhancer_get_render_bounds(&rx, &ry, &rw, &rh);
+
             float tx = (float)touch.report[0].x / 1920.0f * VITA_SCREEN_W;
             float ty = (float)touch.report[0].y / 1088.0f * VITA_SCREEN_H;
 
-            // Map to 400x240 screen area
-            float gx = (tx - MARGIN_X) * ((float)GAME_W / RENDER_W);
-            float gy = ty * ((float)GAME_H / RENDER_H);
+            // Map to 400x240 screen area based on active viewport
+            float gx = (tx - rx) * ((float)GAME_W / rw);
+            float gy = (ty - ry) * ((float)GAME_H / rh);
 
             if (gx < 0.0f) gx = 0.0f;
             if (gx >= (float)GAME_W) gx = (float)GAME_W - 1.0f;
@@ -219,7 +215,7 @@ int main(int argc, char *argv[]) {
             prev_touch_active = 0;
         }
 
-        // 3. Process Physical Buttons & Analog Sticks if no active front touch
+        // 4. Process Physical Buttons & Analog Sticks if no active front touch
         if (!touch_active) {
             int cur_btn_x = -1, cur_btn_y = -1;
 
@@ -278,7 +274,7 @@ int main(int argc, char *argv[]) {
 
         prev_buttons = pad.buttons;
 
-        // 4. Tick game engine and render frame
+        // 5. Tick game engine and render frame
         uint64_t start_time = sceKernelGetProcessTimeWide();
         int sleepTime = jniRun_fn(&jni, (jobject)0x42424242, j_buffer, (jint)frame_count++);
 
@@ -287,19 +283,12 @@ int main(int argc, char *argv[]) {
             break;
         }
 
-        // 5. Upload 400x240 RGB565 buffer to vitaGL texture
+        // 6. Upload 400x240 RGB565 buffer to vitaGL texture
         glBindTexture(GL_TEXTURE_2D, game_tex);
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, GAME_W, GAME_H, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, framebuffer);
 
-        // 6. Draw textured quad
-        glClear(GL_COLOR_BUFFER_BIT);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glVertexPointer(3, GL_FLOAT, 0, vertices);
-        glTexCoordPointer(2, GL_FLOAT, 0, texcoords);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        // 7. Draw textured quad with graphics enhancer (Shaders / Scaling)
+        graphics_enhancer_render(game_tex);
 
         gl_swap();
 
