@@ -92,7 +92,14 @@ static jint Java_getAssetResSize(jmethodID id, va_list args) {
     return 0;
 }
 
+static jbyteArray s_last_asset_res = NULL;
+
 static jobject Java_getAssetRes(jmethodID id, va_list args) {
+    if (s_last_asset_res) {
+        jda_free((JavaDynArray *)s_last_asset_res);
+        s_last_asset_res = NULL;
+    }
+
     jbyteArray nameArr = va_arg(args, jbyteArray);
     char fname[128];
     if (!get_string_from_jbytearray(nameArr, fname, sizeof(fname))) {
@@ -136,6 +143,7 @@ static jobject Java_getAssetRes(jmethodID id, va_list args) {
     fclose(f);
 
     l_debug("[Java] getAssetRes(%s): loaded %ld bytes", fname, size);
+    s_last_asset_res = ret;
     return (jobject)ret;
 }
 

@@ -130,6 +130,10 @@ int main(int argc, char *argv[]) {
     // 400 * 240 * 2 = 192000 bytes framebuffer
     jbyteArray j_buffer = jni->NewByteArray(&jni, 192000);
     uint16_t *framebuffer = (uint16_t *)jni->GetByteArrayElements(&jni, j_buffer, NULL);
+    if (!j_buffer || !framebuffer) {
+        l_fatal("[Destinia] Failed to allocate framebuffer (192000 bytes)!");
+        return -1;
+    }
 
     l_info("[Destinia] Calling initGame (width=%d, height=%d, isKorean=0)...", GAME_W, GAME_H);
     initGame_fn(&jni, (jobject)0x42424242, j_uid, (jint)strlen(uid_str), j_model, (jint)strlen(model_str), GAME_W, GAME_H, 0);
