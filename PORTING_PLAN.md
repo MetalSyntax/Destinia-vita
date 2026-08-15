@@ -133,6 +133,35 @@ Re-ejecutable en cualquier momento con `porting_tools/build/decompile_all.sh`.
   - [x] Enlace con `playSound(soundIdx)` y `setSoundVolume(soundType, cur, max)`.
 
 - [x] **Fase 6: LiveArea, Empaquetado VPK y Preparación de Datos**
-  - [x] Assets LiveArea configurados (`icon0.png`, `bg0.png`, `pic0.png`, `startup.png`, `template.xml`).
+  - [x] Assets LiveArea generados y adaptados a 8 bits indexados (`icon0.png`, `bg0.png`, `pic0.png`, `startup.png`, `template.xml`).
   - [x] `porting_tools/prepare_data_files.sh` con conversión de audio y empaquetado de datos a `ux0_data/destinia/`.
-  - [x] Build automatizado completo (`build/destinia.vpk`, `build/destinia.elf`).
+  - [x] Build automatizado completo (`build/destinia.vpk`, `build/destinia.elf`, `build/destinia_enhanced.vpk`).
+
+- [x] **Fase 7: Mejoras Gráficas por Hardware y Triage de Estabilidad**
+  - [x] **Resolución de Crash #1 (Data Abort en `jniRun` por `realloc` de FalsoJNI):**
+    - Se refactorizó `javaDynArrays` a `JavaDynArray**` en `FalsoJNI_ImplBridge.c`. Cada array dinámico se reserva individualmente en el heap, evitando que un redimensionamiento de la tabla invalide punteros cacheados (`j_buffer`).
+    - Se implementó reciclaje automático de buffers en `Java_getAssetRes` para prevenir fugas de memoria.
+  - [x] **Resolución de Crash #2 (Data Abort en `serialize_shader` / `unserialize_shader` de vitaGL):**
+    - Se migró el pipeline de escalado a un motor fijo acelerado por GPU en `graphics_enhancer.c`, eliminando la inestabilidad de shaders dinámicos en caliente.
+    - Se añadió purga automática de binarios `.gxp` corruptos de `ux0:data/shader_cache/DESTINIA1/` en `init.c`.
+  - [x] **Filtros Gráficos Seleccionables en Tiempo Real (`L1 + R1 + △`):**
+    - Píxel-Art Nítido 2x (`GL_NEAREST`).
+    - Suavizado Bilineal 2x (`GL_LINEAR`).
+    - Vibrancia OLED / LCD Nítido (Realce de brillo y saturación +15%).
+    - Vibrancia OLED / LCD Suave.
+  - [x] **Relaciones de Aspecto Dinámicas (`L1 + R1 + ▢`):**
+    - 5:3 Fit (906 $\times$ 544) ocupando toda la altura sin deformación.
+    - Integer 2x (800 $\times$ 480) centrado píxel-perfecto.
+    - Pantalla Completa 16:9 (960 $\times$ 544).
+  - [x] Persistencia automática de configuración en `ux0:data/destinia/graphics_config.ini`.
+
+---
+
+## 5. Historial de Correcciones y Triage Técnico
+
+| ID | Síntoma / Error | Causa Raíz | Solución Aplicada |
+|---|---|---|---|
+| **#01** | `Data Abort (0x30004)` en `jniRun` durante el combate | `jda_extend()` reasignaba `javaDynArrays` con `realloc`, invalidando el puntero `j_buffer` (192 KB). `GetByteArrayElements` devolvía `NULL` y el motor escribía píxeles en dirección 0. | `javaDynArrays` convertido a tabla de punteros estables `JavaDynArray**`. Cada array conserva su dirección fija en memoria. |
+| **#02** | `Data Abort` en `serialize_shader` (`0xe0003066`) | vitaGL intentaba guardar caché GXP en `ux0:data/shader_cache/DESTINIA1/` pero la carpeta no existía. `sceIoOpen` devolvía `ENOENT` y fallaba al escribir. | Creación automática de directorios de caché y transición a pipeline acelerado por hardware sin depender del traductor dinámico GLSL. |
+| **#03** | `Data Abort` en `unserialize_shader` (`0xe000307a`) | vitaGL intentaba leer un `.gxp` corrupto de 0 bytes dejado por el cuelgue anterior. | Rutina de limpieza en `init.c` que elimina archivos `.gxp` corruptos al arrancar. |
+
