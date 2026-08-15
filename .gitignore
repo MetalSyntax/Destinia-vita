@@ -1,0 +1,80 @@
+# ==============================================================================
+# PS Vita Port .gitignore (Anti-DMCA & Clean Development)
+# ==============================================================================
+
+# macOS metadata & system files
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Proprietary Android game packages & extraction folders (Anti-DMCA)
+*.apk
+*.zip
+*.7z
+*.rar
+*.obb
+*.jar
+/destinia_extract/
+/apk/
+/apk_decompiled/
+destinia-1-0-6-en-kr-android.*
+
+# Decompiled sources (jadx & Ghidra outputs - regenerable)
+/decompiled/
+/decompiled_apk/
+/decompiled_so/
+
+# Proprietary game binaries and data extracted from original game
+*.so
+lib/*.so
+lib/**/*.so
+/ux0_data/
+/data/
+/assets/
+/sound/
+/saves/
+
+# Raw loose media / source captures in root (keep extras/livearea/*)
+*.avif
+*.webp
+*.jpg
+*.jpeg
+!extras/livearea/*
+
+# Build outputs and temporary artifacts
+/build/
+cmake-build-*/
+lib/libc_bridge/out/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+*.elf
+*.vpk
+*.suprx
+*.a
+!lib/kubridge/*.a
+*.o
+*.obj
+
+# PS Vita debugging logs & crash dumps
+/logs/
+logs/
+log_*.txt
+*.psp2dmp
+*.dmp
+*.core
+
+# Python cache & temporary files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
