@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <b>Port nativo del clásico RPG de acción DESTINIA (데스티니아) de Gamevil / Morisoft para PlayStation Vita y PlayStation TV.</b>
+  <b>Native port of the classic action-RPG DESTINIA (데스티니아) by Gamevil / Morisoft for PlayStation Vita and PlayStation TV.</b>
 </p>
 
 <p align="center">
@@ -17,120 +17,119 @@
 
 ---
 
-## 📖 Descripción
+## 📖 Description
 
-**DESTINIA** es un aclamado action-RPG en 2D lanzado originalmente por Gamevil y Morisoft para dispositivos móviles. Este port ejecuta de forma nativa la librería compilada en C (`libdestinia_jni.so`) de la versión para Android en el procesador ARM Cortex-A9 de la PlayStation Vita a través de un cargador dinámico (*soloader*) y la emulación de entorno Android (*FalsoJNI*).
+**DESTINIA** is an acclaimed 2D action-RPG originally released by Gamevil and Morisoft for mobile devices. This port runs the compiled C shared library (`libdestinia_jni.so`) from the Android version natively on the PlayStation Vita's ARM Cortex-A9 processor using a dynamic loader (*soloader*) and Android environment emulation (*FalsoJNI*).
 
-### ✨ Características del Port
+### ✨ Port Features
 
-- **Ejecución Nativa en CPU ARMv7**: Rendimiento suave a 60 FPS sin capas de emulación pesadas.
-- **Pipeline Gráfico con vitaGL**: Renderizado del framebuffer nativo de 400x240 RGB565 mediante textura acelerada por hardware escalada a 960x544 preservando la relación de aspecto 5:3.
-- **Controles Físicos Completos + Touch**: Mapeo integral de botones físicos de la consola (D-Pad, Stick Analógico, Botones de Acción, Gatillos L/R, Start, Select) y soporte total de la pantalla táctil frontal.
-- **Motor de Audio Dedicado**: Mezclador multicanal nativo con hilo dedicado (`SceAudioOut`), decodificación OGG Vorbis (`libvorbisidec` / Tremor) para música de fondo (BGM) y efectos de sonido (SFX).
-- **Gestión de Guardado en ux0**: Redirección transparente de llamadas I/O a `ux0:data/destinia/saves/`.
-- **LiveArea Completo**: Iconos y pantallas de arranque adaptados en formato PNG 8-bits indexado (256 colores) bajo Title ID `DESTINIA1`.
+- **Native ARMv7 CPU Execution**: Smooth 60 FPS performance without heavy emulation layers.
+- **vitaGL Graphics Pipeline**: Renders the native 400x240 RGB565 framebuffer via a hardware-accelerated texture scaled to 960x544, preserving the 5:3 aspect ratio.
+- **Full Physical Controls + Touch**: Full mapping of the console's physical buttons (D-Pad, Left Analog Stick, Action Buttons, L/R Triggers, Start, Select) alongside complete touchscreen support.
+- **Dedicated Audio Engine**: Native multi-channel mixer with a dedicated thread (`SceAudioOut`), OGG Vorbis decoding (`libvorbisidec` / Tremor) for background music (BGM) and sound effects (SFX).
+- **Save Management on ux0**: Seamless redirection of I/O calls to `ux0:data/destinia/saves/`.
+- **Complete LiveArea**: Adapted icons and startup screens in indexed 8-bit PNG format (256 colors) under Title ID `DESTINIA1`.
 
 ---
 
-## 🎮 Controles
+## 🎮 Controls
 
-| Botón PS Vita | Acción en Destinia |
+| PS Vita Button | Action in Destinia |
 | :--- | :--- |
-| **D-Pad / Stick Analógico Izquierdo** | Movimiento del personaje / Navegación en menús |
-| **Cruz ($\times$) / Círculo ($\bigcirc$)** | Ataque principal / Interactuar / Confirmar |
-| **Cuadrado ($\square$)** | Habilidad activa 1 |
-| **Triángulo ($\triangle$)** | Habilidad activa 2 |
-| **Gatillo R1** | Habilidad activa 3 |
-| **Gatillo L1** | Ranura de objeto rápido / Poción |
-| **START** | Menú principal del juego |
-| **SELECT** | Minimapa / Mapa de la zona |
-| **Pantalla Táctil Frontal** | Control táctil completo directo (menús, combate, inventario) |
+| **D-Pad / Left Analog Stick** | Character Movement / Menu Navigation |
+| **Cross ($\times$) / Circle ($\bigcirc$)** | Primary Attack / Interact / Confirm |
+| **Square ($\square$)** | Active Skill 1 |
+| **Triangle ($\triangle$)** | Active Skill 2 |
+| **R Trigger (R1)** | Active Skill 3 |
+| **L Trigger (L1)** | Quick Item Slot / Potion |
+| **START** | In-Game Pause / Main Menu |
+| **SELECT** | Minimap / Area Map |
+| **Front Touchscreen** | Direct touch controls (menus, combat, inventory) |
 
 ---
 
-## 📋 Requisitos Previos
+## 📋 Prerequisites
 
-Para ejecutar el juego en tu PS Vita o PS TV necesitarás:
+To run the game on your PS Vita or PS TV, you will need:
 
-1. Una consola PS Vita / PS TV con Custom Firmware (**HENkaku** o **Enso**) en firmware 3.60 o 3.65+.
-2. [**kubridge.skprx**](https://github.com/TheOfficialFloW/kubridge/releases) (v0.8.1 o superior) instalado en `ur0:tai/config.txt`.
-3. [**libshacccg.suprx**](https://samilops2.gitbook.io/vita-troubleshooting-guide/shader-compiler/extract-libshacccg.suprx) instalado en `ur0:data/` (se puede extraer con la aplicación *ShaRKBR3ED*).
-4. Archivo APK legítimo de **DESTINIA v1.0.6** (versión Android EN/KR, paquete `game.destiniaeng`).
+1. A PS Vita / PS TV console running Custom Firmware (**HENkaku** or **Enso**) on firmware 3.60 or 3.65+.
+2. [**kubridge.skprx**](https://github.com/TheOfficialFloW/kubridge/releases) (v0.8.1 or higher) installed in `ur0:tai/config.txt`.
+3. [**libshacccg.suprx**](https://samilops2.gitbook.io/vita-troubleshooting-guide/shader-compiler/extract-libshacccg.suprx) installed in `ur0:data/` (can be extracted using the *ShaRKBR3ED* app).
+4. A legitimate APK file of **DESTINIA v1.0.6** (Android EN/KR version, package `game.destiniaeng`).
 
 ---
 
-## 📦 Instrucciones de Instalación
+## 📦 Installation Instructions
 
-### Método Automático (Recomendado)
+### Automated Method (Recommended)
 
-1. Instala el archivo `destinia.vpk` en tu consola usando **VitaShell**.
-2. En tu PC, coloca el archivo APK (`destinia-1-0-6-en-kr-android.apk`) en la raíz del proyecto o extráelo en `destinia_extract/`.
-3. Ejecuta el script de preparación:
+1. Install the `destinia.vpk` file on your console using **VitaShell**.
+2. On your PC, place the APK file (`destinia-1-0-6-en-kr-android.apk`) in the project root directory or extract it into `destinia_extract/`.
+3. Run the asset preparation script:
    ```bash
    ./porting_tools/prepare_data_files.sh
    ```
-4. Transfiere la carpeta generada `ux0_data/destinia/` hacia `ux0:data/destinia/` en tu consola PS Vita mediante FTP o cable USB con VitaShell (o usando `python3 porting_tools/manage_vita.py`).
+4. Transfer the generated `ux0_data/destinia/` folder to `ux0:data/destinia/` on your PS Vita console via FTP or USB cable using VitaShell (or using `python3 porting_tools/manage_vita.py`).
 
-### Estructura Final de Archivos en `ux0:data/destinia/`
+### Final File Structure in `ux0:data/destinia/`
 
 ```text
 ux0:data/destinia/
-├── libdestinia_jni.so      <- Librería nativa extraída de lib/armeabi/
-├── assets/                 <- Archivos de datos del juego (.wmb, .agd, .wpn, .tdt, etc.)
-├── sound/                  <- Música y efectos de sonido en formato OGG
-├── saves/                  <- Partidas guardadas (creado automáticamente)
-└── logs/                   <- Registros de depuración
+├── libdestinia_jni.so      <- Native library extracted from lib/armeabi/
+├── assets/                 <- Game data files (.wmb, .agd, .wpn, .tdt, etc.)
+├── sound/                  <- Music and sound effects in OGG format
+├── saves/                  <- Saved games (created automatically)
+└── logs/                   <- Debug logs
 ```
 
 ---
 
-## 🛠️ Compilación desde el Código Fuente
+## 🛠️ Building from Source
 
-El proyecto utiliza el toolchain oficial **VitaSDK** (modo `softfp`) y CMake.
+The project uses the official **VitaSDK** toolchain (`softfp` mode) and CMake.
 
-### Prerrequisitos de Compilación
+### Build Prerequisites
 
-- **VitaSDK** configurado en tu entorno (`$VITASDK` en el `PATH`).
-- Librerías VitaSDK: `vitaGL`, `vitashark`, `mathneon`, `vorbisidec`, `pthread`.
-- CMake (>= 3.14) y Make / Ninja.
+- **VitaSDK** configured in your environment (`$VITASDK` in `PATH`).
+- VitaSDK libraries: `vitaGL`, `vitashark`, `mathneon`, `vorbisidec`, `pthread`.
+- CMake (>= 3.14) and Make / Ninja.
 
-### Pasos de Compilación
+### Build Steps
 
 ```bash
-# 1. Crear y entrar en el directorio de compilación
+# 1. Create and enter the build directory
 mkdir -p build && cd build
 
-# 2. Configurar el proyecto con el toolchain de PS Vita
+# 2. Configure the project with the PS Vita toolchain
 cmake ..
 
-# 3. Compilar el ejecutable ELF y empaquetar el VPK
+# 3. Compile the ELF executable and package the VPK
 make -j$(nproc)
 ```
 
-Esto generará `build/destinia.vpk` listo para transferir e instalar en la consola.
+This will generate `build/destinia.vpk` ready to transfer and install on your console.
 
 ---
 
-## 🏗️ Estructura del Proyecto
+## 🏗️ Project Structure
 
-- `source/`: Código fuente del cargador nativo en C/C++ (ciclo de vida, renderizado GL, I/O, audio, input, bindings JNI).
-- `lib/`: Librerías auxiliares (`falso_jni`, `so_util`, `libc_bridge`, `fios`, `sha1`, `kubridge`).
-- `extras/`: Recursos del LiveArea (`icon0.png`, `bg0.png`, `pic0.png`, `startup.png`, `template.xml`), `cpuinfo`, `meminfo`.
-- `porting_tools/`: Herramientas de automatización, preparación de assets (`prepare_data_files.sh`) y scripts de despliegue (`manage_vita.py`).
-
----
-
-## ⚖️ Aviso Legal (Disclaimer)
-
-Este repositorio contiene **únicamente** el código fuente del cargador libre de código propietario (SoLoader) y herramientas de adaptación. **No contiene assets con derechos de autor, datos del juego, música ni binarios propietarios de DESTINIA.** Para jugar es indispensable poseer una copia legítima del juego original para Android.
+- `source/`: Source code for the native C/C++ loader (lifecycle, GL rendering, I/O, audio, input, JNI bindings).
+- `lib/`: Auxiliary libraries (`falso_jni`, `so_util`, `libc_bridge`, `fios`, `sha1`, `kubridge`).
+- `extras/`: LiveArea assets (`icon0.png`, `bg0.png`, `pic0.png`, `startup.png`, `template.xml`), `cpuinfo`, `meminfo`.
+- `porting_tools/`: Automation tools, asset preparation (`prepare_data_files.sh`), and deployment scripts (`manage_vita.py`).
 
 ---
 
-## 👥 Créditos y Agradecimientos
+## ⚖️ Disclaimer
 
-- **Gamevil** & **Morisoft**: Desarrolladores originales de DESTINIA.
-- **TheFloW**: Por `so_util`, `kubridge` y las técnicas fundamentales de carga dinámica de ejecutables Android en PS Vita.
-- **Rinnegatamante**: Por `vitaGL` y soporte continuo a la escena de ports de PS Vita.
-- **v-atamanenko**: Por `FalsoJNI` y la plantilla base `soloader-boilerplate`.
-- **Comunidad Vita**: A todos los desarrolladores y entusiastas del homebrew de PS Vita.
+This repository contains **only** the open-source loader code and adaptation tools. **It does not contain any copyrighted game assets, data files, music, or proprietary DESTINIA binaries.** A legally acquired copy of the original Android game is required to play.
 
+---
+
+## 👥 Credits and Acknowledgements
+
+- **Gamevil** & **Morisoft**: Original developers of DESTINIA.
+- **TheFloW**: For `so_util`, `kubridge`, and foundational techniques for loading Android executables on PS Vita.
+- **Rinnegatamante**: For `vitaGL` and continued support to the PS Vita porting scene.
+- **v-atamanenko**: For `FalsoJNI` and the `soloader-boilerplate` base template.
+- **Vita Community**: To all developers and enthusiasts in the PS Vita homebrew community.
